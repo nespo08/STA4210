@@ -1,0 +1,131 @@
+---
+title: "Bollywood Movie Regression"
+author: "Larry Winner"
+date: "9/6/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Bollywood Box Office Regression Analysis
+# Read in the Dataset
+
+```{r readdata}
+bolly1 <- read.csv(
+    "http://www.stat.ufl.edu/~winner/data/bollywood_boxoffice2.csv")
+attach(bolly1); names(bolly1)
+head(bolly1)
+tail(bolly1)
+```
+
+# Consider Plots of Gross (Y) versus Budget (X) in Original and Log Scales and plot
+
+```{r plotscale}
+Y1 <- Gross; Y2 <- log(Gross)
+X1 <- Budget; X2 <- log(Budget)
+
+# win.graph(height=5.5, width=7.0)
+par(mfrow=c(2,2))
+plot(Y1 ~ X1, main="Gross vs Budget")
+abline(lm(Y1 ~ X1))
+plot(Y2 ~ X1, main="ln(Gross) vs Budget")
+abline(lm(Y2 ~ X1))
+plot(Y1 ~ X2, main="Gross vs ln(Budget)")
+abline(lm(Y1 ~ X2))
+plot(Y2 ~ X2, main="ln(Gross) vs ln(Budget)")
+abline(lm(Y2 ~ X2))
+par(mfrow=c(1,1))
+```
+
+# Fitting OLS model based on (natural) logs of Y and X
+
+```{r olsfit}
+Y <- Y2; X <- X2
+n <- length(Y)
+Xbar <- mean(X)
+Ybar <- mean(Y)
+SS_XX <- sum((X-Xbar)^2)
+SS_XY <- sum((X-Xbar)*(Y-Ybar))
+SS_YY <- sum((Y-Ybar)^2)
+b1 <- SS_XY / SS_XX
+b0 <- Ybar - b1 * Xbar
+# Print out results
+ols.out1 <- cbind(n, Xbar, Ybar, SS_XX, SS_XY, SS_YY, b0, b1)
+colnames(ols.out1) <- c("n", "Xbar", "Ybar", "SS_XX", "SS_XY", "SS_YY", "b0", "b1")
+round(ols.out1, 3)
+```
+
+# Compute the Predicted values, Residuals, Error Sum of Squares, and Estimated Error Variance
+
+```{r pred_s2}
+Yhat <- b0 + b1 * X
+e <- Y - Yhat
+SSE1 <- SS_YY - b1^2 * SS_XX
+SSE <- sum(e^2)
+s2 <- SSE / (n-2)
+# Print Out results
+ols.out2 <- cbind(b0, b1, SSE, n-2, s2)
+colnames(ols.out2) <- c("b0", "b1", "SSE", "df", "s2=MSE")
+round(ols.out2,3)
+```
+
+# Obtain Estimated Standard Errors for b0, b1, t-tests and 95% CI's for beta0, beta1
+
+```{r se_t_ci}
+SE_b1 <- sqrt(s2/SS_XX)
+SE_b0 <- sqrt(s2*(1/n + Xbar^2/SS_XX))
+SE_yhat <- sqrt(s2*(1/n + (X-Xbar)^2/SS_XX))
+SE_e <- sqrt(s2*(1 - 1/n - (X-Xbar)^2/SS_XX))
+b <- rbind(b0,b1)
+SE_b <- rbind(SE_b0,SE_b1)
+t_b <- b / SE_b
+p_b <- 2*(1-pt(abs(t_b),n-2))
+beta_LB <- b + qt(.025,n-2) * SE_b
+beta_UB <- b + qt(.975,n-2) * SE_b
+beta.out <- cbind(b, SE_b, t_b, p_b, beta_LB, beta_UB)
+colnames(beta.out) <- c("Estimate", "Std. Err.", "t", "P", "LB","UB")
+rownames(beta.out) <- c("Intercept", "Budget")
+round(beta.out, 4)
+```
+
+# Compute 95% Confidence Interval (Mean) and Prediction Interval (Individual Movie) with Budget=100
+
+```{r cipi}
+Xstar <- log(100)
+Ystar <- b0 + b1 * Xstar
+SE_mean_Xs <- sqrt(s2*(1/n + (Xstar-Xbar)^2/SS_XX))
+SE_pred_Xs <- sqrt(s2*(1 + 1/n + (Xstar-Xbar)^2/SS_XX))
+CI_LB <- Ystar + qt(.025,n-2) * SE_mean_Xs
+CI_UB <- Ystar + qt(.975,n-2) * SE_mean_Xs
+PI_LB <- Ystar + qt(.025,n-2) * SE_pred_Xs
+PI_UB <- Ystar + qt(.975,n-2) * SE_pred_Xs
+
+Xstar1 <- exp(Xstar); Ystar1 <- exp(Ystar)
+CI_LB1 <- exp(CI_LB); CI_UB1 <- exp(CI_UB)
+PI_LB1 <- exp(PI_LB); PI_UB1 <- exp(PI_UB)
+
+ci.pi.out <- cbind(Xstar1,Ystar1,CI_LB1,CI_UB1,PI_LB1,PI_UB1)
+colnames(ci.pi.out) <- cbind("X*","Y*","CI_LB","CI_UB","PI_LB","PI_UB")
+round(ci.pi.out,2)
+```
+
+# Computations Using lm function
+
+```{r reglm}
+bolly.mod1 <- lm(Y ~ X)
+summary(bolly.mod1)
+confint(bolly.mod1)
+(ci.mean <- predict(bolly.mod1, list(X=log(100)), int="c"))    # Confidence Interval
+(pi.indiv <- predict(bolly.mod1, list(X=log(100)), int="p"))   #
+exp(ci.mean); exp(pi.indiv)
+```
+
+
+
+
+
+
+
+
