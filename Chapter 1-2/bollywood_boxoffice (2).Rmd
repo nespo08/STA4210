@@ -36,7 +36,7 @@ plot(Y1 ~ X2, main="Gross vs ln(Budget)")
 abline(lm(Y1 ~ X2))
 plot(Y2 ~ X2, main="ln(Gross) vs ln(Budget)")
 abline(lm(Y2 ~ X2))
-par(mfrow=c(1,1))
+par(mfrow=c(1,1)) # PER PERCENT INCREASE (AS BUDGET GOES UP 1%, SO DOES GROSS)
 ```
 
 # Fitting OLS model based on (natural) logs of Y and X
@@ -71,7 +71,7 @@ colnames(ols.out2) <- c("b0", "b1", "SSE", "df", "s2=MSE")
 round(ols.out2,3)
 ```
 
-# Obtain Estimated Standard Errors for b0, b1, t-tests and 95% CI's for beta0, beta1
+# Obtain Estimated Standard Errors for b0, b1, t-tests and 95% CI's for beta0, beta1 (LB = lower bound, UB = upper bound)
 
 ```{r se_t_ci}
 SE_b1 <- sqrt(s2/SS_XX)
@@ -111,6 +111,9 @@ colnames(ci.pi.out) <- cbind("X*","Y*","CI_LB","CI_UB","PI_LB","PI_UB")
 round(ci.pi.out,2)
 ```
 
+Our CI is for the population, our PI is for a single movie (which is why its much wider, much more uncertain)
+
+
 # Computations Using lm function
 
 ```{r reglm}
@@ -121,6 +124,64 @@ confint(bolly.mod1)
 (pi.indiv <- predict(bolly.mod1, list(X=log(100)), int="p"))   #
 exp(ci.mean); exp(pi.indiv)
 ```
+### Analysis of Variance
+
+```{r anova}
+SSTO <- SS_YY; dfTO <- n-1
+SSR <- sum((Yhat-Ybar)^2);  dfR <- 1; MSR <- SSR/dfR
+dfE <- n-2; MSE <- SSE/dfE
+Fstar <- MSR/MSE
+F_crit <- qf(.95,dfR,dfE)
+F_P <- pf(Fstar,dfR,dfE)
+reg.out <- cbind(dfR, SSR, MSR, Fstar, F_crit, F_P)
+err.out <- cbind(dfE, SSE, MSE, NA, NA, NA)
+tot.out <- cbind(dfTO, SSTO, NA, NA, NA, NA)
+aov.out <- rbind(reg.out, err.out, tot.out)
+colnames(aov.out) <- c("df", "SS", "MS", "F*", "F Crit", "P(>F*)")
+rownames(aov.out) <- c("Regression", "Error", "Total")
+round(aov.out, 4)
+```
+
+### Correlation, t-test, Confidence Interval
+
+```{r corr}
+r <- SS_XY/sqrt(SS_XX*SS_YY)
+SE_r <- sqrt((1-r^2)/dfE)
+t_r <- r/SE_r
+P_r <- 2*(1-pt(abs(t_r),dfE))
+zprime <- 0.5*log((1+r)/(1-r))
+SE_zprime <- sqrt(1/(n-3))
+zp.LB <- zprime + qnorm(.025)*SE_zprime
+zp.UB <- zprime + qnorm(.975)*SE_zprime
+r.LB <- (exp(2*zp.LB)-1) / (exp(2*zp.LB)+1)
+r.UB <- (exp(2*zp.UB)-1) / (exp(2*zp.UB)+1)
+r.out <- cbind(r, SE_r, t_r, P_r, r.LB, r.UB)
+colnames(r.out) <- c("r", "SE{r} (H0)", "t*", "P(>|t*|)", "LB", "UB")
+rownames(r.out) <- c("Pearson Correlation")
+round(r.out, 4)
+```
+
+### Computations Using lm and cor.test functions
+
+```{r reglm}
+bolly.mod1 <- lm(Y ~ X)
+summary(bolly.mod1)
+confint(bolly.mod1)
+(ci.mean <- predict(bolly.mod1, list(X=log(100)), int="c"))    # Confidence Interval
+(pi.indiv <- predict(bolly.mod1, list(X=log(100)), int="p"))   #
+exp(ci.mean); exp(pi.indiv)
+anova(bolly.mod1)
+cor.test(X,Y)
+```
+
+
+
+
+
+
+
+
+
 
 
 
