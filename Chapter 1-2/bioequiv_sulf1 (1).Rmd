@@ -1,0 +1,90 @@
+---
+title: "bioequiv sulfadoxine"
+author: "Larry Winner"
+date: "9/1/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Read in Dataset
+
+```{r readdata}
+spdata <- read.csv("http://www.stat.ufl.edu/~winner/data/bioequiv_sulf.csv")
+attach(spdata); names(spdata)
+spdata
+```
+
+## Create a variable that is log(AUC) for the drug sulfadoxine and a variable for formulation
+
+```{r newvar}
+log.AUC.sulf <- log(y[measure==2 & drug==1])       # measure=AUC, drug=sulfadoxine
+form21 <- form[measure==2 & drug==1]               # form=1 if Test, form=2 if Ref
+form.AUC.sulf <- factor(form21, levels=1:2, labels=c("T","R"))
+cbind(form.AUC.sulf, log.AUC.sulf)
+plot(log.AUC.sulf ~ form.AUC.sulf, main="Sulfadoxine Log(AUC) by Formulation")
+```
+
+## Compute n, ybar, sd for Test and Reference
+
+```{r summarystats}
+n.T <- length(log.AUC.sulf[form.AUC.sulf=="T"])
+n.R <- length(log.AUC.sulf[form.AUC.sulf=="R"])
+ybarl.T <- mean(log.AUC.sulf[form.AUC.sulf=="T"])
+ybarl.R <- mean(log.AUC.sulf[form.AUC.sulf=="R"])
+sdl.T <- sd(log.AUC.sulf[form.AUC.sulf=="T"])
+sdl.R <- sd(log.AUC.sulf[form.AUC.sulf=="R"])
+
+# Print results in tabular form
+T.stats <- cbind(n.T, ybarl.T, sdl.T)
+R.stats <- cbind(n.R, ybarl.R, sdl.R)
+TR.stats <- rbind(T.stats, R.stats)
+colnames(TR.stats) <- c("n", "mean", "SD")
+rownames(TR.stats) <- c("Test", "Reference")
+round(TR.stats, 5)
+```
+
+## Compute pooled SD, 90%CI for muT-muR and print results
+
+```{r CI}
+s_p <- sqrt(((n.T-1)*sdl.T^2+(n.R-1)*sdl.R^2)/(n.T+n.R-2))   # Pooled SD
+df <- n.T+n.R-2                                              # Degrees of Freedom
+
+ybarl.diff <- ybarl.T - ybarl.R                              # Mean Difference
+se.diff <- s_p * sqrt(1/n.T + 1/n.R)                         # Standard Error of mean diff
+t.05 <- qt(.95, df)                                          # Critical t-value for 90% CI
+
+mul.LB <- ybarl.diff - t.05 * se.diff                        # Lower Confidence Limit
+mul.UB <- ybarl.diff + t.05 * se.diff                        # Upper Confidence Limit
+
+# Print out summary of 90%CI for log(muT)-log(muR)=log(muT/muR)
+ci.out <- cbind(df, s_p, ybarl.diff, se.diff, t.05, mul.LB, mul.UB)
+colnames(ci.out) <- c("df","pooled SD", "mean diff", "Std Err", "t(.95)", "Lower Bound", "Upper Bound")
+round(ci.out, 5)
+
+# Print out results for 90%CI for 100(muT/muR)
+bioeq.out <- cbind(100*exp(mul.LB), 100*exp(ybarl.diff), 100*exp(mul.UB))
+colnames(bioeq.out) <- c("Lower Bound", "Point Estimate", "Upper Bound")
+round(bioeq.out,3)
+```
+
+## Use t.test function for 90%CI for log(muT/muR)
+
+```{r ttest}
+log.AUC.ttest <- t.test(log.AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.90)
+log.AUC.ttest
+(est <- log.AUC.ttest$estimate)
+(ci <- log.AUC.ttest$conf.int)
+
+cbind(100*exp(ci[1]), 100*exp(est[1]-est[2]), 100*exp(ci[2]))
+```
+
+
