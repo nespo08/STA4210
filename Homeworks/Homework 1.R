@@ -1,7 +1,9 @@
 # Homework 1
 
 
-# Read in data ------------------------------------------------------------
+# Question 1 --------------------------------------------------------------
+
+# Read in data
 
 spdata <- read.csv("http://www.stat.ufl.edu/~winner/data/bioequiv_sulf.csv")
 attach(spdata); names(spdata)
@@ -14,8 +16,6 @@ form21 <- form[measure==2 & drug==1]               # form=1 if Test, form=2 if R
 form.AUC.sulf <- factor(form21, levels=1:2, labels=c("T","R"))
 cbind(form.AUC.sulf, AUC.sulf)
 plot(AUC.sulf ~ form.AUC.sulf, main="Sulfadoxine AUC by Formulation")
-
-# Question 1 --------------------------------------------------------------
 
 ## Compute n, ybar, sd for Test and Reference
 
@@ -57,3 +57,46 @@ AUC.ttest <- t.test(ref.AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.9
 AUC.ttest
 (est <- AUC.ttest$estimate)
 (ci <- AUC.ttest$conf.int)
+
+
+
+
+# Question 3 --------------------------------------------------------------
+
+# Read in data
+spain_latlong <- read.csv(
+  "https://users.stat.ufl.edu/~winner/data/spain_latlong.csv")
+attach(spain_latlong); names(spain_latlong)
+head(spain_latlong)
+tail(spain_latlong)
+
+# P.3.a. Obtain scatterplots of WGS ref - GIS - (Y) versus Ptolemy (X) for lat and long
+
+# Define X and Y for lat and long
+Y_long_wgs <- Long_wgs
+X_long_ptol <- Long_ptol
+Y_lat_wgs <- Lat_wgs
+X_lat_ptol <- Lat_ptol
+
+# Plots for Y versus X (lat and long)
+par(mfrow=c(1,2))
+
+plot(Y_long_wgs ~ X_long_ptol, main="WGS Longitude vs Ptolemy Longitude")
+
+plot(Y_lat_wgs ~ X_lat_ptol, main="WGS Latitude vs Ptolemy Latitude")
+
+# P.3.b. Fit simple linear regression models, relating GIS (Y) to Ptolemy (X)
+
+lm_long <- lm(Y_long_wgs ~ X_long_ptol)
+lm_lat <- lm(Y_lat_wgs ~ X_lat_ptol)
+
+# Plot scatterplots again, now with linear models fitted
+par(mfrow=c(1,2))
+
+plot(Y_long_wgs ~ X_long_ptol, main="WGS Longitude vs Ptolemy Longitude")
+abline(lm_long)
+
+plot(Y_lat_wgs ~ X_lat_ptol, main="WGS Latitude vs Ptolemy Latitude")
+abline(lm_lat)
+
+# P.3.c. Test whether there is a positive association between GIS and Ptolemy
