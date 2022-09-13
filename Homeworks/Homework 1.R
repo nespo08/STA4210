@@ -55,9 +55,6 @@ round(ci.out, 5)
 
 AUC.ttest <- t.test(ref.AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
 AUC.ttest
-(est <- AUC.ttest$estimate)
-(ci <- AUC.ttest$conf.int)
-
 
 
 
