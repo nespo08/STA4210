@@ -26,18 +26,18 @@ spdata
 ## Create a variable that is log(AUC) for the drug sulfadoxine and a variable for formulation
 
 ```{r newvar}
-log.AUC.sulf <- log(y[measure==2 & drug==1])       # measure=AUC, drug=sulfadoxine
+AUC.sulf <- y[measure==2 & drug==1]      # measure=AUC, drug=sulfadoxine
 form21 <- form[measure==2 & drug==1]               # form=1 if Test, form=2 if Ref
 form.AUC.sulf <- factor(form21, levels=1:2, labels=c("T","R"))
-cbind(form.AUC.sulf, log.AUC.sulf)
-plot(log.AUC.sulf ~ form.AUC.sulf, main="Sulfadoxine Log(AUC) by Formulation")
+cbind(form.AUC.sulf, AUC.sulf)
+plot(AUC.sulf ~ form.AUC.sulf, main="Sulfadoxine Log(AUC) by Formulation")
 ```
 
 ## Compute n, ybar, sd for Test and Reference
 
 ```{r summarystats}
-n.T <- length(log.AUC.sulf[form.AUC.sulf=="T"])
-n.R <- length(log.AUC.sulf[form.AUC.sulf=="R"])
+n.T <- length(AUC.sulf[form.AUC.sulf=="T"])
+n.R <- length(AUC.sulf[form.AUC.sulf=="R"])
 ybarl.T <- mean(log.AUC.sulf[form.AUC.sulf=="T"])
 ybarl.R <- mean(log.AUC.sulf[form.AUC.sulf=="R"])
 sdl.T <- sd(log.AUC.sulf[form.AUC.sulf=="T"])
