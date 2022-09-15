@@ -34,5 +34,12 @@ lines(tmPrd.grid, predict(tm.reg1, list(tmPrd=tmPrd.grid), int="p")[,3],
 legend("bottomright", c("Fitted", "CI for Mean", "PI for Game"), lty=1,
      col=c("blue", "red", "purple"))
 
+tm.reg1 <- lm(teamPts ~ tmPrd)
+summary(tm.reg1)
+anova(tm.reg1)
 
+tm.reg2 <- lm(teamPts ~ -1, offset = tmPrd)
+anova(tm.reg2)
+
+anova(tm.reg2, tm.reg1)
 
