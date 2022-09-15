@@ -60,7 +60,6 @@ AUC.ttest <- t.test(AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
 AUC.ttest
 
 
-
 # P.1.B -------------------------------------------------------------------
 
 ## Use var.test function for 95%CI for s1^2/s2^2
@@ -108,22 +107,48 @@ abline(lm_lat)
 
 # P.3.C. Test whether there is a positive association between GIS and Ptolemy
 
+summary(lm_long)
+# H0: B1 <= 0, Ha: B1 > 0. Since we have a p-value that is very small (<2e-16), we reject the null hypothesis
+# Therefore, there is a positive association between WGS Longitude (GIS) and Ptolemy Longitude.
+
+summary(lm_lat)
+# H0: B1 <= 0, Ha: B1 > 0. Since we have a p-value that is very small (<2e-16), we reject the null hypothesis
+# Therefore, there is a positive association between WGS Latitude (GIS) and Ptolemy Latitude.
+
 # P.3.D. C95% for b1 > 0
+
+confint(lm_long)
+# The 95% confidence interval for B1 is (0.7213,0.8684). We are 95% confident the true value for B1 (the mean change) 
+# falls between 0.7213 and 0.8684. Since the interval does not contain 0, we can say the mean change in GIS as Ptolemy 
+# is “increased by 1 unit”, or that the mean change is positive.
+
+confint(lm_lat)
+# The 95% confidence interval for B1 is (0.7830,0.9498). We are 95% confident the true value for B1 (the mean change) 
+# falls between 0.7830 and 0.9498. Since the interval does not contain 0, we can say the mean change in GIS as Ptolemy 
+# is “increased by 1 unit”, or that the mean change is positive.
 
 # P.3.E. ANOVAs, F-tests, coefficients of correlation and determination
 
 # Linear model for longitude
-summary(lm_long)
 anova(lm_long)
+aov(Y_long_wgs ~ X_long_ptol)
+cor(X_long_ptol, Y_long_wgs) # X, Y
 
-# FIXME: ttests
-long.ttest <- t.test(Y_long_wgs ~ X_long_ptol, var.equal=TRUE, conf.level=0.95)
-long.ttest
+# R-squared (coeff. of determination)
+summary(lm_long)$r.squared
+
+# F-test 
+long.var.test <- var.test(X_long_ptol, Y_long_wgs, var.equal=TRUE, conf.level=0.95) # X, Y
+long.var.test
 
 # Linear model for latitude
-summary(lm_lat)
 anova(lm_lat)
+aov(Y_lat_wgs ~ X_lat_ptol)
+cor(X_lat_ptol, Y_lat_wgs) # X, Y
 
-# FIXME: ttests
-lat.ttest <- t.test(Y_lat_wgs ~ X_lat_ptol, var.equal=TRUE, conf.level=0.95)
-lat.ttest
+# R-squared (coeff. of determination)
+summary(lm_lat)$r.squared
+ 
+# F-test
+lat.var.test <- var.test(X_lat_ptol, Y_lat_wgs, var.equal=TRUE, conf.level=0.95) # X, Y
+lat.var.test
