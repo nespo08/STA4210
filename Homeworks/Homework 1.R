@@ -67,6 +67,19 @@ AUC.ttest
 AUC.vartest <- var.test(AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
 AUC.vartest
 
+
+# P.1.C -------------------------------------------------------------------
+
+# Create var X to represent function for Test/Ref
+X <- c(rep(1,23), rep(0,23))
+
+lm_X <- lm(AUC.sulf ~ X)
+lm_X
+
+plot(AUC.sulf ~ X, main="AUC.sulf vs Test/Reference Formulation")
+abline(lm_X)
+
+
 # Question 3 --------------------------------------------------------------
 
 # Read in data
