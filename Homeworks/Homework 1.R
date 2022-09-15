@@ -9,6 +9,9 @@ spdata <- read.csv("http://www.stat.ufl.edu/~winner/data/bioequiv_sulf.csv")
 attach(spdata); names(spdata)
 spdata
 
+
+# P.1.A -------------------------------------------------------------------
+
 ## Create a variable that is AUC for the drug sulfadoxine and a variable for formulation
 
 AUC.sulf <- y[measure==2 & drug==1]       # measure=AUC, drug=sulfadoxine
@@ -53,10 +56,17 @@ round(ci.out, 5)
 
 ## Use t.test function for 95%CI for muT-muR
 
-AUC.ttest <- t.test(ref.AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
+AUC.ttest <- t.test(AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
 AUC.ttest
 
 
+
+# P.1.B -------------------------------------------------------------------
+
+## Use var.test function for 95%CI for s1^2/s2^2
+
+AUC.vartest <- var.test(AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
+AUC.vartest
 
 # Question 3 --------------------------------------------------------------
 
@@ -96,4 +106,24 @@ abline(lm_long)
 plot(Y_lat_wgs ~ X_lat_ptol, main="WGS Latitude vs Ptolemy Latitude")
 abline(lm_lat)
 
-# P.3.c. Test whether there is a positive association between GIS and Ptolemy
+# P.3.C. Test whether there is a positive association between GIS and Ptolemy
+
+# P.3.D. C95% for b1 > 0
+
+# P.3.E. ANOVAs, F-tests, coefficients of correlation and determination
+
+# Linear model for longitude
+summary(lm_long)
+anova(lm_long)
+
+# FIXME: ttests
+long.ttest <- t.test(Y_long_wgs ~ X_long_ptol, var.equal=TRUE, conf.level=0.95)
+long.ttest
+
+# Linear model for latitude
+summary(lm_lat)
+anova(lm_lat)
+
+# FIXME: ttests
+lat.ttest <- t.test(Y_lat_wgs ~ X_lat_ptol, var.equal=TRUE, conf.level=0.95)
+lat.ttest
