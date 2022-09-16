@@ -59,7 +59,6 @@ round(ci.out, 5)
 AUC.ttest <- t.test(AUC.sulf ~ form.AUC.sulf, var.equal=TRUE, conf.level=0.95)
 AUC.ttest
 
-
 # P.1.B -------------------------------------------------------------------
 
 ## Use var.test function for 95%CI for s1^2/s2^2
@@ -74,11 +73,13 @@ AUC.vartest
 X <- c(rep(1,23), rep(0,23))
 
 lm_X <- lm(AUC.sulf ~ X)
-lm_X
+summary(lm_X)
 
 plot(AUC.sulf ~ X, main="AUC.sulf vs Test/Reference Formulation")
 abline(lm_X)
 
+X.ttest <- t.test(AUC.sulf ~ X, var.equal=TRUE, conf.level=0.95)
+X.ttest
 
 # Question 3 --------------------------------------------------------------
 
