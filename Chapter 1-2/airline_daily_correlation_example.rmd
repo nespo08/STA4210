@@ -1,0 +1,73 @@
+---
+title: "Airline Daily (Correlation Example)"
+author: "Nicholas Esposito"
+date: "9/20/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load all data
+
+```{r}
+library(quantmod)
+
+AAd <- getSymbols("AAL", env=NULL, from="2007-06-01",
+    to = "2022-09-01", periodicity="daily")
+UAd <- getSymbols("UAL", env=NULL, from="2007-06-01",
+    to = "2022-09-01", periodicity="daily")
+DAd <- getSymbols("DAL", env=NULL, from="2007-06-01",
+    to = "2022-09-01", periodicity="daily")
+
+AAd.LR <- diff(log(as.numeric(AAd[,6])))
+UAd.LR <- diff(log(as.numeric(UAd[,6])))
+DAd.LR <- diff(log(as.numeric(DAd[,6])))
+```
+
+Compute correlation tests with pearson, spearman, and kendall methods
+
+```{r}
+Aird.LR <- cbind(AAd.LR, UAd.LR, DAd.LR)
+cor(Aird.LR)
+cor.test(AAd.LR, UAd.LR, method="pearson")
+cor.test(AAd.LR, UAd.LR, method="spearman", exact=FALSE)
+cor.test(AAd.LR, UAd.LR, method="kendall")
+
+(n.days <- nrow(Aird.LR))
+```
+Display Q-Q Plots - We want the points to be tight to the line
+
+```{r}
+#win.graph(height=5.5, width=7.0)
+par(mfrow=c(2,3))
+qqnorm(AAd.LR, ylab="AA Daily Log Returns Quantiles")
+    qqline(AAd.LR, col="red", lwd=2)
+qqnorm(UAd.LR, ylab="UA Daily Log Returns Quantiles")
+    qqline(UAd.LR, col="red", lwd=2)
+qqnorm(DAd.LR, ylab="DA Daily Log Returns Quantiles")
+    qqline(DAd.LR, col="red", lwd=2)
+qqplot(qt(1:n.days/n.days-1/(2*n.days), df=3), AAd.LR,
+   main=expression(paste("q-q Plot with Reference to ", t[3])),
+   xlab=expression(paste(t[3], " quantiles")),
+   ylab="AA Daily Log Return Quantiles")
+qqplot(qt(1:n.days/n.days-1/(2*n.days), df=3), UAd.LR,
+   main=expression(paste("q-q Plot with Reference to ", t[3])),
+   xlab=expression(paste(t[3], " quantiles")),
+   ylab="UA Daily Log Return Quantiles")
+qqplot(qt(1:n.days/n.days-1/(2*n.days), df=3), DAd.LR,
+   main=expression(paste("q-q Plot with Reference to ", t[3])),
+   xlab=expression(paste(t[3], " quantiles")),
+   ylab="DA Daily Log Return Quantiles")
+
+par(mfrow=c(1,1))
+```
+Kernal densities on diagonal + correlations
+
+```{r}
+##install.packages("GGally")
+#win.graph(height=5.5, width=7.0) 
+GGally::ggpairs(as.data.frame(Aird.LR))
+```
+
