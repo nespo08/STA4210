@@ -1,0 +1,77 @@
+---
+title: "NBA_ht_wt_regression_diagnostics"
+author: "Nicholas Esposito"
+date: "9/20/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Read in data
+
+```{r}
+nba1 <- read.csv("http://www.stat.ufl.edu/~winner/data/nba_ht_wt.csv",header=T)
+attach(nba1); names(nba1)
+```
+
+Fit linear model and run Shapiro test
+
+```{r}
+nba.mod1 <- lm(Weight ~ Height)
+summary(nba.mod1)
+e <- resid(nba.mod1)
+shapiro.test(e)
+```
+
+Estimating Mean and Predicting Individual weight when X=X*
+
+```{r}
+Hstar <- 78
+(ymean <- predict(nba.mod1, list(Height=Hstar), int="c"))
+(yindiv <- predict(nba.mod1, list(Height=Hstar), int="p"))
+```
+
+Regression Testing (for Linearity and Lack of Fit)
+
+```{r}
+### Breusch-Pagan Test
+#install.packages("lmtest")
+library(lmtest)
+bptest(Weight ~ Height,studentize=FALSE)
+
+### F-test for Lack of Fit
+nba.mod1a <- lm(Weight ~ factor(Height)-1)
+anova(nba.mod1,nba.mod1a)
+summary(nba.mod1a)
+```
+Box-Cox analysis
+
+```{r}
+library(MASS)
+
+bc.mod1 <- boxcox(nba.mod1,plot=T)   # Runs series of power transforms and plots
+print(cbind(bc.mod1$x,bc.mod1$y))      # Print out results (lambda,log-like)
+print(bc.mod1$x[which.max(bc.mod1$y)])     # Print out "best" lambda
+ci.bc <- max(bc.mod1$y)-0.5*qchisq(0.95,1)   # Obtain cut-off for 95% CI (in log-like)
+print(bc.mod1$x[bc.mod1$y>= ci.bc])    # Print Values of lambda in 95% CI
+```
+
+Fit a second linear model, this time using log(weight)
+
+```{r}
+nba.mod2 <- lm(log(Weight) ~ Height)
+summary(nba.mod2)
+e2 <- resid(nba.mod2)
+shapiro.test(e2)
+
+#library(lmtest)
+bptest(log(Weight) ~ Height,studentize=FALSE)
+
+nba.mod3 <- lm(log(Weight) ~ factor(Height)-1)
+anova(nba.mod2,nba.mod3)
+summary(nba.mod3)
+```
+
+
