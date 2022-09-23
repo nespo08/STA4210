@@ -1,0 +1,95 @@
+---
+title: "Take_Home_Exam_1"
+author: "Nicholas Esposito"
+date: "9/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load in the data (x and y values)
+
+```{r}
+X <- c(130, 130, 140, 140, 150, 150, 160, 160, 170, 170, 180, 180)
+Y <- c(19.68, 22.29, 19.62, 15.97, 19.17, 21.34, 18.22, 19.26, 14.68, 14.19, 13.31, 12.57)
+
+plot(X,Y)
+```
+
+1. Obtain the least squares fitted equation. Give the first fitted value and residual.
+
+```{r}
+lm_1 <- lm(Y ~ X)
+lm_1
+
+fitted(lm_1)[1]
+residuals(lm_1)[1]
+```
+
+2. Give the error sum of squares and the mean square error.
+
+```{r}
+n <- length(X) # Number of observations
+
+lm_1_SSE <- sum((Y-fitted(lm_1))^2)
+lm_1_MSE <- lm_1_SSE / (n-2)
+```
+
+3. Give a 95% confidence interval for b1
+
+```{r}
+confint(lm_1)
+```
+
+4. Give a 95% confidence interval for b0
+
+```{r}
+confint(lm_1)
+```
+5. Give the 95% confidence interval for E{Y|X=35}
+
+```{r}
+
+```
+
+6. Give the 95% prediction interval for a new observation when X=35
+
+```{r}
+
+```
+
+7. Give the Analysis of Variance
+
+```{r}
+anova(lm_1)
+
+#F(0.95) = 4.9646
+```
+
+8. Use the F-test to test H0: b1 = 0 versus Ha: b1 != 0 (alpha = 0.05)
+
+```{r}
+
+```
+
+9. Obtain R^2 and r
+
+```{r}
+summary(lm_1)
+
+cor(X,Y)
+```
+
+10. Use the correlation test (see notes) to test H0: p = 0 versus Ha: p != 0 (alpha = 0.05)
+
+test statistic = 528.56
+
+```{r}
+cor.test(X,Y,method = "spearman")
+```
+
+
+
+
