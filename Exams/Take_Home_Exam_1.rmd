@@ -14,8 +14,6 @@ Load in the data (x and y values)
 ```{r}
 X <- c(130, 130, 140, 140, 150, 150, 160, 160, 170, 170, 180, 180)
 Y <- c(19.68, 22.29, 19.62, 15.97, 19.17, 21.34, 18.22, 19.26, 14.68, 14.19, 13.31, 12.57)
-
-plot(X,Y)
 ```
 
 1. Obtain the least squares fitted equation. Give the first fitted value and residual.
@@ -35,6 +33,9 @@ n <- length(X) # Number of observations
 
 lm_1_SSE <- sum((Y-fitted(lm_1))^2)
 lm_1_MSE <- lm_1_SSE / (n-2)
+
+lm_1_SSE
+lm_1_MSE
 ```
 
 3. Give a 95% confidence interval for b1
@@ -48,16 +49,17 @@ confint(lm_1)
 ```{r}
 confint(lm_1)
 ```
-5. Give the 95% confidence interval for E{Y|X=35}
+5. Give the 95% confidence interval for E{Y|X=150} FIXME
 
 ```{r}
-
+X_value <- data.frame(x=150)
+predict(lm_1, X_value, interval="confidence", level=0.95)
 ```
 
-6. Give the 95% prediction interval for a new observation when X=35
+6. Give the 95% prediction interval for a new observation when X=150 FIXME
 
 ```{r}
-
+predict(lm_1, X_value, interval="prediction", level=0.95)
 ```
 
 7. Give the Analysis of Variance
