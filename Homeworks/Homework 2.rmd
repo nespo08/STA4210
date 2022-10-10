@@ -1,0 +1,122 @@
+---
+title: "Homework 2"
+author: "Nicholas Esposito"
+date: "10/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, results=FALSE}
+# Load packages
+library(lmtest)
+```
+
+
+### Load the data
+
+Y - Deflection of galvonometer, X - Area of the wires on the coupling
+
+```{r, echo = FALSE}
+exp_data <- read.table("https://users.stat.ufl.edu/~winner/data/explosives1.dat",
+                       header = F, col.names = c("coupling", "areaWire", "defGalv"))
+```
+
+
+### a) The fitted equation and residuals
+
+The fitted equation for the simple linear model relating the deflection of galvonometer (Y) to the area of the wires on the coupling (X) is: 
+
+Y = 184.436 - 0.695X
+
+```{r, echo = FALSE}
+X <- exp_data$areaWire
+Y <- exp_data$defGalv
+lm_exp_data <- lm(Y ~ X)
+
+summary(lm_exp_data)
+```
+The residuals are:
+
+```{r, echo = FALSE}
+residuals <- resid(lm_exp_data)
+residuals
+```
+
+### b) Plot of Y vs X
+
+```{r}
+plot(Y ~ X, main = "Deflection of Galvonomete (Y) vs Area of the Wires on the Coupling (X)")
+abline(lm_exp_data)
+```
+
+c) Residual Plot of e vs X
+
+```{r}
+plot(X, residuals, main = "Residuals vs Predictors (X)")
+abline(lm_exp_data)
+```
+
+d) A test of whether deflections (Y) are associated with area of the wires (X)
+
+Use Pearson's correlation test to test H0: p = 0 versus Ha: p != 0 (alpha=0.05).
+
+Test-Statistic (t*): -20.557
+Critical Value, or t(0.975, 20): 2.086
+Rejection Region: |t*| >= t(0.975, 20)
+
+Since |-20.557| >= 2.086, the test statistic t* is statistically significant at alpha = 0.05. Thus, we reject the null hypothesis H0: p = 0 and conclude that there is a linear association between deflections (Y) and area of the wires (X).
+
+```{r}
+cor.test(X,Y) # Pearson's correlation test
+```
+
+e) Normal Probability Plot of the residuals
+
+```{r}
+qqnorm(residuals)
+qqline(residuals)
+```
+
+f) Shapiro-Wilk test for normality (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+
+```{r}
+shapiro.test(residuals)
+```
+
+g) Brown-Forsyth test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+
+```{r}
+
+```
+
+
+h) Breusch-Pagan Test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+
+```{r}
+bptest(Y ~ X, studentize = FALSE)
+```
+
+i) F-test for lack-of-fit (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+
+```{r}
+lm_exp_data_lof <- lm(Y ~ factor(X)-1)
+anova(lm_exp_data, lm_exp_data_lof)
+summary(lm_exp_data_lof)
+```
+
+j) Obtain “best” power transformation method, based on Box-Cox transformations (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+
+```{r}
+
+```
+
+
+k) Obtain simultaneous 95% Confidence Intervals for B0, B1
+
+l) Obtain an approximate 95% Confidence Interval for the Area of the coupling, 
+when a deflection of 115 was observed (See section 4.6)
+
+m) Obtain X’X, X’Y, (X’X)-1, beta-hat, MSE, and s2{beta-hat}

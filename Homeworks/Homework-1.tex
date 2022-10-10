@@ -1,0 +1,825 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Homework 1},
+  pdfauthor={Nicholas Esposito},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Homework 1}
+\author{Nicholas Esposito}
+\date{9/15/2022}
+
+\begin{document}
+\maketitle
+
+\hypertarget{question-1}{%
+\subsection{Question 1}\label{question-1}}
+
+\hypertarget{load-in-the-data-for-q1}{%
+\subsubsection{Load in the data for Q1}\label{load-in-the-data-for-q1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{spdata }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"http://www.stat.ufl.edu/\textasciitilde{}winner/data/bioequiv\_sulf.csv"}\NormalTok{)}
+\FunctionTok{attach}\NormalTok{(spdata); }\CommentTok{\#names(spdata)}
+
+\FunctionTok{library}\NormalTok{(knitr)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{p.1.a---see-written-pdf-for-work-by-hand}{%
+\subsubsection{P.1.A - See Written PDF for Work
+By-Hand}\label{p.1.a---see-written-pdf-for-work-by-hand}}
+
+95\% CI: (-177.61, 1177.09)
+
+We can be 95\% confident the mean difference of the Test formulation and
+the Reference formulation falls between -177.61 and 1177.09.
+
+Since the test statistic, t = 1.4869, is less than the critical value,
+t(0.025,44) = 2.01537, we fail to reject the null hypothesis that µT -
+µR = 0.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Create a variable that is AUC for the drug sulfadoxine and a variable for formulation}
+
+\NormalTok{AUC.sulf }\OtherTok{\textless{}{-}}\NormalTok{ y[measure}\SpecialCharTok{==}\DecValTok{2} \SpecialCharTok{\&}\NormalTok{ drug}\SpecialCharTok{==}\DecValTok{1}\NormalTok{]       }\CommentTok{\# measure=AUC, drug=sulfadoxine}
+\NormalTok{form21 }\OtherTok{\textless{}{-}}\NormalTok{ form[measure}\SpecialCharTok{==}\DecValTok{2} \SpecialCharTok{\&}\NormalTok{ drug}\SpecialCharTok{==}\DecValTok{1}\NormalTok{]               }\CommentTok{\# form=1 if Test, form=2 if Ref}
+\NormalTok{form.AUC.sulf }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(form21, }\AttributeTok{levels=}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, }\AttributeTok{labels=}\FunctionTok{c}\NormalTok{(}\StringTok{"T"}\NormalTok{,}\StringTok{"R"}\NormalTok{))}
+\FunctionTok{cbind}\NormalTok{(form.AUC.sulf, AUC.sulf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       form.AUC.sulf  AUC.sulf
+##  [1,]             1 11436.549
+##  [2,]             1 10406.588
+##  [3,]             1 12769.902
+##  [4,]             1 10439.444
+##  [5,]             1 13752.375
+##  [6,]             1 12974.267
+##  [7,]             1 10872.707
+##  [8,]             1  9932.970
+##  [9,]             1 10308.540
+## [10,]             1 11458.121
+## [11,]             1 10859.644
+## [12,]             1 10739.787
+## [13,]             1 10021.870
+## [14,]             1 11099.313
+## [15,]             1 10220.002
+## [16,]             1  9170.551
+## [17,]             1 10700.944
+## [18,]             1 12245.013
+## [19,]             1 10469.052
+## [20,]             1 11875.365
+## [21,]             1  9230.044
+## [22,]             1 11086.793
+## [23,]             1 11770.119
+## [24,]             2 11090.639
+## [25,]             2 10848.088
+## [26,]             2  9921.965
+## [27,]             2  9662.636
+## [28,]             2  9446.208
+## [29,]             2 10862.941
+## [30,]             2  9541.321
+## [31,]             2 10108.271
+## [32,]             2 10399.200
+## [33,]             2 13004.856
+## [34,]             2  9908.013
+## [35,]             2 11009.034
+## [36,]             2 10813.698
+## [37,]             2  9523.476
+## [38,]             2 10628.483
+## [39,]             2 12509.385
+## [40,]             2 11277.196
+## [41,]             2 10768.125
+## [42,]             2 10192.722
+## [43,]             2  8169.261
+## [44,]             2 12120.744
+## [45,]             2  8904.577
+## [46,]             2 11635.102
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ form.AUC.sulf, }\AttributeTok{main=}\StringTok{"Sulfadoxine AUC by Formulation"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-1_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Compute n, ybar, sd for Test and Reference}
+
+\NormalTok{n.T }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"T"}\NormalTok{])}
+\NormalTok{n.R }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"R"}\NormalTok{])}
+\NormalTok{ybarl.T }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"T"}\NormalTok{])}
+\NormalTok{ybarl.R }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"R"}\NormalTok{])}
+\NormalTok{sdl.T }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"T"}\NormalTok{])}
+\NormalTok{sdl.R }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(AUC.sulf[form.AUC.sulf}\SpecialCharTok{==}\StringTok{"R"}\NormalTok{])}
+
+\DocumentationTok{\#\# Print results in tabular form}
+\NormalTok{T.stats }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(n.T, ybarl.T, sdl.T)}
+\NormalTok{R.stats }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(n.R, ybarl.R, sdl.R)}
+\NormalTok{TR.stats }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(T.stats, R.stats)}
+\FunctionTok{colnames}\NormalTok{(TR.stats) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"n"}\NormalTok{, }\StringTok{"mean"}\NormalTok{, }\StringTok{"SD"}\NormalTok{)}
+\FunctionTok{rownames}\NormalTok{(TR.stats) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Test"}\NormalTok{, }\StringTok{"Reference"}\NormalTok{)}
+\FunctionTok{round}\NormalTok{(TR.stats, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            n     mean      SD
+## Test      23 11036.52 1142.27
+## Reference 23 10536.78 1137.23
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Compute pooled SD, 95\%CI for muT{-}muR and print results}
+
+\NormalTok{s\_p }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(((n.T}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{*}\NormalTok{sdl.T}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{+}\NormalTok{(n.R}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{*}\NormalTok{sdl.R}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(n.T}\SpecialCharTok{+}\NormalTok{n.R}\DecValTok{{-}2}\NormalTok{))   }\CommentTok{\# Pooled SD}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ n.T}\SpecialCharTok{+}\NormalTok{n.R}\DecValTok{{-}2}                                              \CommentTok{\# Degrees of Freedom}
+
+\NormalTok{ybarl.diff }\OtherTok{\textless{}{-}}\NormalTok{ ybarl.T }\SpecialCharTok{{-}}\NormalTok{ ybarl.R                              }\CommentTok{\# Mean Difference}
+\NormalTok{se.diff }\OtherTok{\textless{}{-}}\NormalTok{ s\_p }\SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{n.T }\SpecialCharTok{+} \DecValTok{1}\SpecialCharTok{/}\NormalTok{n.R)                         }\CommentTok{\# Standard Error of mean diff}
+\NormalTok{t}\FloatTok{.025} \OtherTok{\textless{}{-}} \FunctionTok{qt}\NormalTok{(.}\DecValTok{975}\NormalTok{, df)                                          }\CommentTok{\# Critical t{-}value for 95\% CI}
+
+\NormalTok{mul.LB }\OtherTok{\textless{}{-}}\NormalTok{ ybarl.diff }\SpecialCharTok{{-}}\NormalTok{ t}\FloatTok{.025} \SpecialCharTok{*}\NormalTok{ se.diff                        }\CommentTok{\# Lower Confidence Limit}
+\NormalTok{mul.UB }\OtherTok{\textless{}{-}}\NormalTok{ ybarl.diff }\SpecialCharTok{+}\NormalTok{ t}\FloatTok{.025} \SpecialCharTok{*}\NormalTok{ se.diff                        }\CommentTok{\# Upper Confidence Limit}
+
+\DocumentationTok{\#\# Print out summary of 95\%CI for muT{-}muR}
+\NormalTok{ci.out }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(df, s\_p, ybarl.diff, se.diff, t}\FloatTok{.025}\NormalTok{, mul.LB, mul.UB)}
+\FunctionTok{colnames}\NormalTok{(ci.out) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"df"}\NormalTok{,}\StringTok{"pooled SD"}\NormalTok{, }\StringTok{"mean diff"}\NormalTok{, }\StringTok{"Std Err"}\NormalTok{, }\StringTok{"t(.975)"}\NormalTok{, }\StringTok{"Lower Bound"}\NormalTok{, }\StringTok{"Upper Bound"}\NormalTok{)}
+\FunctionTok{round}\NormalTok{(ci.out, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      df pooled SD mean diff  Std Err t(.975) Lower Bound Upper Bound
+## [1,] 44  1139.753    499.74 336.0948 2.01537   -177.6145    1177.094
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Use t.test function for 95\%CI for µT{-}µR}
+
+\NormalTok{AUC.ttest }\OtherTok{\textless{}{-}} \FunctionTok{t.test}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ form.AUC.sulf, }\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\NormalTok{AUC.ttest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Two Sample t-test
+## 
+## data:  AUC.sulf by form.AUC.sulf
+## t = 1.4869, df = 44, p-value = 0.1442
+## alternative hypothesis: true difference in means between group T and group R is not equal to 0
+## 95 percent confidence interval:
+##  -177.6145 1177.0945
+## sample estimates:
+## mean in group T mean in group R 
+##        11036.52        10536.78
+\end{verbatim}
+
+\hypertarget{p.1.b---see-written-pdf-for-work-by-hand}{%
+\subsubsection{P.1.B - See Written PDF for Work
+By-Hand}\label{p.1.b---see-written-pdf-for-work-by-hand}}
+
+95\% CI: (0.4279, 2.3788)
+
+We can be 95\% confident the ratio σT\^{}2 / σ\_R\^{}2 falls between
+0.4279 and 2.3788.
+
+Since the test statistic, F = 1.0089, is less than the critical value,
+F(0.975,22,22) = 2.358, we fail to reject the null hypothesis that
+σ\_T\^{}2 = σ\_R\^{}2.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Use var.test function for 95\%CI for σ1\^{}2/σ2\^{}2}
+
+\NormalTok{AUC.vartest }\OtherTok{\textless{}{-}} \FunctionTok{var.test}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ form.AUC.sulf, }\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\NormalTok{AUC.vartest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  F test to compare two variances
+## 
+## data:  AUC.sulf by form.AUC.sulf
+## F = 1.0089, num df = 22, denom df = 22, p-value = 0.9836
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.427877 2.378826
+## sample estimates:
+## ratio of variances 
+##           1.008883
+\end{verbatim}
+
+\hypertarget{p.1.c---see-written-pdf-for-work-by-hand}{%
+\subsubsection{P.1.C - See Written PDF for Work
+By-Hand}\label{p.1.c---see-written-pdf-for-work-by-hand}}
+
+β0 is the mean of Y (AUC value) where subjects receive the Reference
+formulation (X = 0).
+
+β1 is the difference between the means (µT - µR).
+
+µT can be found by adding β0 and β1.
+
+When conducting the t-test for the H0: β1 = 0, we find the same test
+statistic (\textbar t\textbar{} = 1.4869) and the same p-value (0.1442)
+as the t-test in P.1.A.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create var X to represent function for Test/Ref}
+\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{23}\NormalTok{), }\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{23}\NormalTok{))}
+
+\NormalTok{lm\_X }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X)}
+\FunctionTok{summary}\NormalTok{(lm\_X)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = AUC.sulf ~ X)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2367.5  -703.5  -150.7   533.5  2715.8 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  10536.8      237.7  44.336   <2e-16 ***
+## X              499.7      336.1   1.487    0.144    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1140 on 44 degrees of freedom
+## Multiple R-squared:  0.04784,    Adjusted R-squared:  0.0262 
+## F-statistic: 2.211 on 1 and 44 DF,  p-value: 0.1442
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X, }\AttributeTok{main=}\StringTok{"AUC.sulf vs Test/Reference Formulation"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(lm\_X)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-1_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{X.ttest }\OtherTok{\textless{}{-}} \FunctionTok{t.test}\NormalTok{(AUC.sulf }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X, }\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\NormalTok{X.ttest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Two Sample t-test
+## 
+## data:  AUC.sulf by X
+## t = -1.4869, df = 44, p-value = 0.1442
+## alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+## 95 percent confidence interval:
+##  -1177.0945   177.6145
+## sample estimates:
+## mean in group 0 mean in group 1 
+##        10536.78        11036.52
+\end{verbatim}
+
+\hypertarget{question-2---see-written-pdf-for-work-by-hand}{%
+\subsection{Question 2 - See Written PDF for Work
+By-Hand}\label{question-2---see-written-pdf-for-work-by-hand}}
+
+\hypertarget{all-the-work-for-question-2-can-be-found-in-the-written-pdf.}{%
+\subsubsection{All the work for Question 2 can be found in the written
+PDF.}\label{all-the-work-for-question-2-can-be-found-in-the-written-pdf.}}
+
+\hypertarget{question-3}{%
+\subsection{Question 3}\label{question-3}}
+
+\hypertarget{read-in-the-data-for-q3}{%
+\subsubsection{Read in the data for Q3}\label{read-in-the-data-for-q3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Read in data}
+\NormalTok{spain\_latlong }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}
+  \StringTok{"https://users.stat.ufl.edu/\textasciitilde{}winner/data/spain\_latlong.csv"}\NormalTok{)}
+\FunctionTok{attach}\NormalTok{(spain\_latlong); }\CommentTok{\#names(spain\_latlong)}
+\FunctionTok{head}\NormalTok{(spain\_latlong)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Long_ptol  Long_wgs Lat_ptol  Lat_wgs
+## 1  18.91593 3.0373984 44.40133 42.46950
+## 2  18.76106 2.8813008 44.43459 42.66913
+## 3  17.98673 2.5691057 44.33481 42.85213
+## 4  17.19027 1.8926829 43.93570 42.93530
+## 5  16.41593 0.9560976 43.92461 42.31978
+## 6  15.61947 0.4357724 43.70288 42.68577
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tail}\NormalTok{(spain\_latlong)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Long_ptol  Long_wgs Lat_ptol  Lat_wgs
+## 43  5.995575 -8.565854 38.32594 37.46211
+## 44  6.438053 -8.852033 38.32594 37.82810
+## 45  6.548673 -7.655285 38.83592 38.14418
+## 46  6.991150 -8.071545 38.94678 37.89464
+## 47  7.433628 -7.733333 39.06874 38.46026
+## 48  7.676991 -8.591870 39.50111 38.74307
+\end{verbatim}
+
+\hypertarget{p.3.a---obtain-scatterplots-of-wgs-ref---gis---y-versus-ptolemy-x-for-lat-and-long}{%
+\subsubsection{P.3.A - Obtain scatterplots of WGS ref - GIS - (Y) versus
+Ptolemy (X) for lat and
+long}\label{p.3.a---obtain-scatterplots-of-wgs-ref---gis---y-versus-ptolemy-x-for-lat-and-long}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define X and Y for lat and long}
+\NormalTok{Y\_long\_wgs }\OtherTok{\textless{}{-}}\NormalTok{ Long\_wgs}
+\NormalTok{X\_long\_ptol }\OtherTok{\textless{}{-}}\NormalTok{ Long\_ptol}
+\NormalTok{Y\_lat\_wgs }\OtherTok{\textless{}{-}}\NormalTok{ Lat\_wgs}
+\NormalTok{X\_lat\_ptol }\OtherTok{\textless{}{-}}\NormalTok{ Lat\_ptol}
+
+\CommentTok{\# Plots for Y versus X (lat and long)}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{plot}\NormalTok{(Y\_long\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_long\_ptol, }\AttributeTok{main=}\StringTok{"WGS Longitude vs Ptolemy Longitude"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(Y\_lat\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_lat\_ptol, }\AttributeTok{main=}\StringTok{"WGS Latitude vs Ptolemy Latitude"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-1_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\hypertarget{p.3.b---fit-simple-linear-regression-models-relating-gis-y-to-ptolemy-x}{%
+\subsubsection{P.3.B - Fit simple linear regression models, relating GIS
+(Y) to Ptolemy
+(X)}\label{p.3.b---fit-simple-linear-regression-models-relating-gis-y-to-ptolemy-x}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fit linear models}
+\NormalTok{lm\_long }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Y\_long\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_long\_ptol)}
+\NormalTok{lm\_lat }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Y\_lat\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_lat\_ptol)}
+
+\CommentTok{\# Plot scatterplots again, now with linear models fitted}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{plot}\NormalTok{(Y\_long\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_long\_ptol, }\AttributeTok{main=}\StringTok{"WGS Longitude vs Ptolemy Longitude"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(lm\_long)}
+
+\FunctionTok{plot}\NormalTok{(Y\_lat\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_lat\_ptol, }\AttributeTok{main=}\StringTok{"WGS Latitude vs Ptolemy Latitude"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(lm\_lat)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-1_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{p.3.c---test-whether-there-is-a-positive-association-between-gis-and-ptolemy}{%
+\subsubsection{P.3.C - Test whether there is a positive association
+between GIS and
+Ptolemy}\label{p.3.c---test-whether-there-is-a-positive-association-between-gis-and-ptolemy}}
+
+\hypertarget{wgs-longitude-gis-vs-ptolemy-longitude}{%
+\paragraph{WGS Longitude (GIS) vs Ptolemy
+Longitude}\label{wgs-longitude-gis-vs-ptolemy-longitude}}
+
+H0: β1 \textless= 0, Ha: β1 \textgreater{} 0
+
+Since we have a p-value that is very small (\textless2e-16), we reject
+the null hypothesis.
+
+Therefore, there is a positive association between WGS Longitude (GIS)
+and Ptolemy Longitude.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(lm\_long)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Y_long_wgs ~ X_long_ptol)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.17142 -0.82974  0.06034  0.55848  2.05949 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -12.52269    0.43079  -29.07   <2e-16 ***
+## X_long_ptol   0.79487    0.03654   21.75   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.026 on 46 degrees of freedom
+## Multiple R-squared:  0.9114, Adjusted R-squared:  0.9095 
+## F-statistic: 473.3 on 1 and 46 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{wgs-latitude-gis-vs-ptolemy-latitude}{%
+\paragraph{WGS Latitude (GIS) vs Ptolemy
+Latitude}\label{wgs-latitude-gis-vs-ptolemy-latitude}}
+
+H0: β1 \textless= 0, Ha: β1 \textgreater{} 0
+
+Since we have a p-value that is very small (\textless2e-16), we reject
+the null hypothesis.
+
+Therefore, there is a positive association between WGS Latitude (GIS)
+and Ptolemy Latitude.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(lm\_lat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Y_lat_wgs ~ X_lat_ptol)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.0364 -0.4388 -0.1698  0.5240  1.7681 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  4.84465    1.69783   2.853  0.00646 ** 
+## X_lat_ptol   0.86638    0.04145  20.904  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6335 on 46 degrees of freedom
+## Multiple R-squared:  0.9048, Adjusted R-squared:  0.9027 
+## F-statistic:   437 on 1 and 46 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{p.3.d---c95-for-ux3b21-0}{%
+\subsubsection{P.3.D - C95\% for β1 \textgreater{}
+0}\label{p.3.d---c95-for-ux3b21-0}}
+
+\hypertarget{linear-model-for-wgs-longitude-gis-vs-ptolemy-longitude}{%
+\paragraph{Linear model for WGS Longitude (GIS) vs Ptolemy
+Longitude}\label{linear-model-for-wgs-longitude-gis-vs-ptolemy-longitude}}
+
+The 95\% confidence interval for β1 is (0.7213,0.8684).
+
+We are 95\% confident the true value for β1 (the mean change) falls
+between 0.7213 and 0.8684.
+
+Since the interval does not contain 0, we can say the mean change in GIS
+as Ptolemy is ``increased by 1 unit'', or that the mean change is
+positive.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(lm\_long)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                   2.5 %      97.5 %
+## (Intercept) -13.3898306 -11.6555476
+## X_long_ptol   0.7213281   0.8684198
+\end{verbatim}
+
+\hypertarget{linear-model-for-wgs-latitude-gis-vs-ptolemy-latitude}{%
+\paragraph{Linear model for WGS Latitude (GIS) vs Ptolemy
+Latitude}\label{linear-model-for-wgs-latitude-gis-vs-ptolemy-latitude}}
+
+The 95\% confidence interval for β1 is (0.7830,0.9498).
+
+We are 95\% confident the true value for β1 (the mean change) falls
+between 0.7830 and 0.9498.
+
+Since the interval does not contain 0, we can say the mean change in GIS
+as Ptolemy is ``increased by 1 unit'', or that the mean change is
+positive.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(lm\_lat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 2.5 %    97.5 %
+## (Intercept) 1.4270933 8.2622007
+## X_lat_ptol  0.7829506 0.9498045
+\end{verbatim}
+
+\hypertarget{p.3.e-anovas-f-tests-coefficients-of-correlation-and-determination}{%
+\subsubsection{P.3.E ANOVAs, F-tests, coefficients of correlation and
+determination}\label{p.3.e-anovas-f-tests-coefficients-of-correlation-and-determination}}
+
+\hypertarget{linear-model-for-wgs-longitude-gis-vs-ptolemy-longitude-1}{%
+\paragraph{Linear model for WGS Longitude (GIS) vs Ptolemy
+Longitude}\label{linear-model-for-wgs-longitude-gis-vs-ptolemy-longitude-1}}
+
+Coefficient of correlation: 0.9546814
+
+Coefficient of determination: 0.9114167
+
+H0: σ1\^{}2 / σ2\^{}2 = 1, Ha: σ1\^{}2 / σ2\^{}2 != 1
+
+Since the p-value obtained by the t-test (0.2128) exceeds the alpha
+value of 0.05, we fail to reject the null hypothesis. The true ratio of
+variances is not equal to 1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Linear model for longitude}
+\FunctionTok{anova}\NormalTok{(lm\_long)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Response: Y_long_wgs
+##             Df Sum Sq Mean Sq F value    Pr(>F)    
+## X_long_ptol  1 497.81  497.81  473.29 < 2.2e-16 ***
+## Residuals   46  48.38    1.05                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{aov}\NormalTok{(Y\_long\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_long\_ptol)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+##    aov(formula = Y_long_wgs ~ X_long_ptol)
+## 
+## Terms:
+##                 X_long_ptol Residuals
+## Sum of Squares     497.8068   48.3833
+## Deg. of Freedom           1        46
+## 
+## Residual standard error: 1.025579
+## Estimated effects may be unbalanced
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(X\_long\_ptol, Y\_long\_wgs) }\CommentTok{\# X, Y}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9546814
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# R{-}squared (coeff. of determination)}
+\FunctionTok{summary}\NormalTok{(lm\_long)}\SpecialCharTok{$}\NormalTok{r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9114167
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# F{-}test }
+\NormalTok{long.var.test }\OtherTok{\textless{}{-}} \FunctionTok{var.test}\NormalTok{(X\_long\_ptol, Y\_long\_wgs, }\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{) }\CommentTok{\# X, Y}
+\NormalTok{long.var.test}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  F test to compare two variances
+## 
+## data:  X_long_ptol and Y_long_wgs
+## F = 1.4425, num df = 47, denom df = 47, p-value = 0.2128
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.8086536 2.5732284
+## sample estimates:
+## ratio of variances 
+##           1.442515
+\end{verbatim}
+
+\hypertarget{linear-model-for-wgs-latitude-gis-vs-ptolemy-latitude-1}{%
+\paragraph{Linear model for WGS Latitude (GIS) vs Ptolemy
+Latitude}\label{linear-model-for-wgs-latitude-gis-vs-ptolemy-latitude-1}}
+
+Coefficient of correlation: 0.9511858
+
+Coefficient of determination: 0.9047545
+
+H0: σ1\^{}2 / σ2\^{}2 = 1, Ha: σ1\^{}2 / σ2\^{}2 != 1
+
+Since the p-value obtained by the t-test (0.5245) exceeds the alpha
+value of 0.05, we fail to reject the null hypothesis. The true ratio of
+variances is not equal to 1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Linear model for latitude}
+\FunctionTok{anova}\NormalTok{(lm\_lat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Response: Y_lat_wgs
+##            Df  Sum Sq Mean Sq F value    Pr(>F)    
+## X_lat_ptol  1 175.382 175.382  436.96 < 2.2e-16 ***
+## Residuals  46  18.463   0.401                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{aov}\NormalTok{(Y\_lat\_wgs }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X\_lat\_ptol)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+##    aov(formula = Y_lat_wgs ~ X_lat_ptol)
+## 
+## Terms:
+##                 X_lat_ptol Residuals
+## Sum of Squares   175.38220  18.46287
+## Deg. of Freedom          1        46
+## 
+## Residual standard error: 0.6335351
+## Estimated effects may be unbalanced
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(X\_lat\_ptol, Y\_lat\_wgs) }\CommentTok{\# X, Y}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9511858
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# R{-}squared (coeff. of determination)}
+\FunctionTok{summary}\NormalTok{(lm\_lat)}\SpecialCharTok{$}\NormalTok{r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9047545
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# F{-}test}
+\NormalTok{lat.var.test }\OtherTok{\textless{}{-}} \FunctionTok{var.test}\NormalTok{(X\_lat\_ptol, Y\_lat\_wgs, }\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{) }\CommentTok{\# X, Y}
+\NormalTok{lat.var.test}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  F test to compare two variances
+## 
+## data:  X_lat_ptol and Y_lat_wgs
+## F = 1.2054, num df = 47, denom df = 47, p-value = 0.5245
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.675707 2.150177
+## sample estimates:
+## ratio of variances 
+##           1.205359
+\end{verbatim}
+
+\end{document}

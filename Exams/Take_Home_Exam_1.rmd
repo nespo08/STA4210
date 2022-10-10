@@ -31,7 +31,7 @@ residuals(lm_1)[1]
 ```{r}
 n <- length(X) # Number of observations
 
-lm_1_SSE <- sum((Y-fitted(lm_1))^2)
+lm_1_SSE <- sum((fitted(lm_1)-Y)^2)
 lm_1_MSE <- lm_1_SSE / (n-2)
 
 lm_1_SSE
@@ -49,17 +49,37 @@ confint(lm_1)
 ```{r}
 confint(lm_1)
 ```
-5. Give the 95% confidence interval for E{Y|X=150} FIXME
+5. Give the 95% confidence interval for E{Y|X=150}
 
 ```{r}
-X_value <- data.frame(x=150)
-predict(lm_1, X_value, interval="confidence", level=0.95)
+X_value <- data.frame(X=c(150))
+predict(lm_1, newdata = X_value, interval="confidence", level=0.95)
+
+ssXX <- sum((X-155)^2)
+sY <- sqrt(lm_1_MSE*(1/12 + 25/ssXX))
+
+yhat <- 18.26529
+upr <- yhat + (sY * 2.228)
+lwr <- yhat - (sY * 2.228)
+
+upr
+lwr
 ```
 
-6. Give the 95% prediction interval for a new observation when X=150 FIXME
+6. Give the 95% prediction interval for a new observation when X=150
 
 ```{r}
 predict(lm_1, X_value, interval="prediction", level=0.95)
+
+ssXX <- sum((X-155)^2)
+sY <- sqrt(lm_1_MSE*(1 + 1/12 + 25/ssXX))
+
+yhat <- 18.26529
+upr <- yhat + (sY * 2.228)
+lwr <- yhat - (sY * 2.228)
+
+upr
+lwr
 ```
 
 7. Give the Analysis of Variance
@@ -86,10 +106,8 @@ cor(X,Y)
 
 10. Use the correlation test (see notes) to test H0: p = 0 versus Ha: p != 0 (alpha = 0.05)
 
-test statistic = 528.56
-
 ```{r}
-cor.test(X,Y,method = "spearman")
+cor.test(X,Y) # Pearson's correlation test
 ```
 
 
