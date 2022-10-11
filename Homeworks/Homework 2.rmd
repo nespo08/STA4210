@@ -17,6 +17,8 @@ library(lmtest)
 
 ### Load the data
 
+NEED TO GROUP THE DATA! DO NOT USE THE COUPLING AS DATA
+
 Y - Deflection of galvonometer, X - Area of the wires on the coupling
 
 ```{r, echo = FALSE}
@@ -24,6 +26,47 @@ exp_data <- read.table("https://users.stat.ufl.edu/~winner/data/explosives1.dat"
                        header = F, col.names = c("coupling", "areaWire", "defGalv"))
 ```
 
+# INCLASS EXPLANATION - Brown-Forsthye Test
+
+```{r}
+group.BF <- ifelse(exp_data$coupling <= 4, 1, 2) # Breaks the data by coupling value
+group.BF
+
+fit1 <- lm(defGalv ~ areaWire)
+res1 <- resid(fit1)
+
+median_e1 <- median(res1[group.BF == 1]) # Median residuals
+median_e2 <- median(res1[group.BF == 2])
+
+median_e <- rep(c(median_e1, median_e2), each = 11)
+
+d.BF <- abs(res1 - median_e)
+cbind(group.BF, d.BF)
+
+# T-test function
+t.test(d.BF ~ group.BF, var.equal = TRUE)
+
+# OR: Brute force calculation 
+dbar1 <- mean(d.BF[group.BF == 1])
+dbar2 <- mean(d.BF[group.BF == 2])
+
+var1 <- var(d.BF[group.BF == 1])
+var2 <- var(d.BF[group.BF == 2])
+
+n1 <- length(d.BF[group.BF == 1])
+n2 <- length(d.BF[group.BF == 2])
+
+var.p <- ((n1-1)*var1 + (n2-1)*var2) / (n1+n2-2) # Pooled variance
+
+t.BF <- (dbar1 - dbar2) / sqrt(var.p*(1/n1 + 1/n2)) # T-statistic
+
+p.t.BF <- 2*(1-pt(abs(t.BF), n1+n2-2)) # P-value
+
+BF.out <- cbind(dbar1 - dbar2, t.BF, p.t.BF)
+colnames(BF.out) <- c("Mean Diff", "t*", "2P(>|t*|))")
+rownames(BF.out) <- c("BF Test")
+round(BF.out, 4)
+```
 
 ### a) The fitted equation and residuals
 
@@ -89,19 +132,73 @@ shapiro.test(residuals)
 g) Brown-Forsyth test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
 
 ```{r}
+group.BF <- ifelse(exp_data$coupling <= 4, 1, 2) # Breaks the data by coupling value
+group.BF
 
+fit1 <- lm(exp_data$defGalv ~ exp_data$areaWire)
+res1 <- resid(fit1)
+
+median_e1 <- median(residuals[group.BF == 1]) # Median residuals
+median_e2 <- median(residuals[group.BF == 2])
+
+median_e <- rep(c(median_e1, median_e2), each = 11)
+
+d.BF <- abs(res1 - median_e)
+cbind(group.BF, d.BF)
+
+# T-test function
+# t.test(d.BF ~ group.BF, var.equal = TRUE)
+
+# OR: Brute force calculation 
+dbar1 <- mean(d.BF[group.BF == 1])
+dbar2 <- mean(d.BF[group.BF == 2])
+
+var1 <- var(d.BF[group.BF == 1])
+var2 <- var(d.BF[group.BF == 2])
+
+n1 <- length(d.BF[group.BF == 1])
+n2 <- length(d.BF[group.BF == 2])
+
+var.p <- ((n1-1)*var1 + (n2-1)*var2) / (n1+n2-2) # Pooled variance
+
+t.BF <- (dbar1 - dbar2) / sqrt(var.p*(1/n1 + 1/n2)) # T-statistic
+
+p.t.BF <- 2*(1-pt(abs(t.BF), n1+n2-2)) # P-value
+
+BF.out <- cbind(dbar1 - dbar2, t.BF, p.t.BF)
+colnames(BF.out) <- c("Mean Diff", "t*", "2P(>|t*|))")
+rownames(BF.out) <- c("BF Test")
+round(BF.out, 4)
 ```
-
 
 h) Breusch-Pagan Test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
 
 ```{r}
-bptest(Y ~ X, studentize = FALSE)
+bptest(lm_exp_data)
+
+# 1. Find ei^2
+residuals.sq <- residuals^2
+
+# 2. Fit Regression of ei^2 on X
+lm.BP <- lm(residuals.sq ~ X)
+summary(lm.BP)
+
+newR.sq <- 0.1178 # From summary of new linear model
+chi.sq <- newR.sq * 22 # 22 observations
+
+crit.X <- qchisq(0.95, 1, lower.tail=TRUE)
+
+# Output
+BP.out <- cbind(chi.sq, crit.X)
+colnames(BP.out) <- c("Chi-Sq*", "Crit. Value")
+rownames(BP.out) <- c("BP Test")
+round(BP.out, 4)
 ```
 
 i) F-test for lack-of-fit (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
 
 ```{r}
+# SEE PHONE FOR PIC
 lm_exp_data_lof <- lm(Y ~ factor(X)-1)
 anova(lm_exp_data, lm_exp_data_lof)
 summary(lm_exp_data_lof)
@@ -120,3 +217,6 @@ l) Obtain an approximate 95% Confidence Interval for the Area of the coupling,
 when a deflection of 115 was observed (See section 4.6)
 
 m) Obtain X’X, X’Y, (X’X)-1, beta-hat, MSE, and s2{beta-hat}
+
+X' -> X^T 
+(X'X)-1 is the inverse of X^T*X
