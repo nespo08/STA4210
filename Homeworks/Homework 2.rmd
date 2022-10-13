@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo = FALSE, results=FALSE}
 # Load packages
 library(lmtest)
+library(MASS)
 ```
 
 
@@ -34,10 +35,23 @@ Y = 184.436 - 0.695X
 X <- exp_data$areaWire
 Y <- exp_data$defGalv
 lm_exp_data <- lm(Y ~ X)
-
-# ADD BY HAND CALCULATION
+n <- length(Y)
 
 summary(lm_exp_data)
+
+# OR: Calculation by hand
+xbar <- mean(X)
+ybar <- mean(Y)
+SSxy <- sum((X-xbar)*(Y-ybar))
+SSxx <- sum((X-xbar)^2)
+b1 <- SSxy/SSxx
+b0 <- ybar - b1*xbar
+yhat <- b0 + b1*X
+
+eq.out <- cbind(b1, b0)
+colnames(eq.out) <- c("b1", "b0")
+rownames(eq.out) <- c("Fitted equation")
+round(eq.out, 4)
 ```
 The residuals are:
 
@@ -73,9 +87,15 @@ Since |-20.557| >= 2.086, the test statistic t* is statistically significant at 
 ```{r}
 cor.test(X,Y) # Pearson's correlation test
 
-# ADD BY HAND CALCULATION
+# OR: Calculation by hand
+SSyy <- sum((Y-ybar)^2)
+R <- SSxy / sqrt(SSxx*SSyy)
+t.Cor <- R*sqrt(n-2) / sqrt(1-R^2)
 
-SSyy <- sum()
+cor.out <- cbind(R,t.Cor)
+colnames(cor.out) <- c("R", "t*")
+rownames(cor.out) <- c("Correlation Test")
+round(cor.out, 4)
 ```
 
 e) Normal Probability Plot of the residuals
@@ -154,8 +174,6 @@ We have test statistic X^2* = 2.5916, and will compare it against X^2(0.95, 1) =
 Since X^2* = 2.5916 < 3.8415, we fail to reject H0, and thus conclude that there is equal variance among the errors at the significance level 0.05.
 
 ```{r}
-#bptest(lm_exp_data)
-
 # 1. Find ei^2
 residuals.sq <- residuals^2
 
@@ -164,7 +182,7 @@ lm.BP <- lm(residuals.sq ~ X)
 summary(lm.BP)
 
 newR.sq <- 0.1178 # From summary of new linear model
-chi.sq <- newR.sq * 22 # 22 observations
+chi.sq <- newR.sq * n # 22 observations
 
 crit.X <- qchisq(0.95, 1, lower.tail=TRUE)
 
@@ -192,19 +210,117 @@ lm_exp_data_reduced <- lm(Y ~ X)
 anova(lm_exp_data_reduced, lm_exp_data_full)
 ```
 
-j) Obtain “best” power transformation method, based on Box-Cox transformations (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+j) Obtain “best” power transformation method, based on Box-Cox transformations
+
+First, we run series of power transformations and find the "best" lambda value, which is -0.2222. This lambda can be used to fit a new linear regression model, which relates (Y^lambda-1) / lambda to X, where lambda is -0.2222.
+
+In R, the model is fitted by lm((Y^lambda-1) / lambda ~ X).
 
 ```{r}
+# Runs series of power transformations and plots
+lm_exp_data_BC <- boxcox(lm_exp_data, plot=T)
 
+# Print out "best" lambda (max lambda value)
+lambda <- lm_exp_data_BC$x[which.max(lm_exp_data_BC$y)]
+
+BC.out <- cbind(lambda)
+colnames(BC.out) <- c("Best Lambda")
+rownames(BC.out) <- c("Box-Cox")
+round(BC.out, 4)
 ```
 
 
-k) Obtain simultaneous 95% Confidence Intervals for B0, B1
+k) Obtain simultaneous 95% Confidence Intervals for β0, β1
+
+The 95% confidence interval for β0 is (178.3546, 190.5168). We are 95% confident the true value for β0 (the intercept of the regression line) falls between 178.3546 and 190.5168.
+
+The 95% confidence interval for β1 is (-0.7659, -0.6248). We are 95% confident the true value for β1 (the mean change) falls between -0.7659 and -0.6248.
+
+```{r}
+# Calculation by hand
+SSE <- sum((Y-yhat)^2)
+MSE <- SSE / (n - 2) # n = 22
+s.b1 <- sqrt(MSE) / sqrt(SSxx)
+s.b0 <- sqrt(MSE*(1/n + (xbar)^2 / SSxx))
+
+t.value <- qt(0.975, n-2)
+
+# b0 CI
+b0.LL <- b0 - t.value*s.b0
+b0.UL <- b0 + t.value*s.b0
+
+CI.b0.out <- cbind(b0.LL, b0.UL)
+colnames(CI.b0.out) <- c("Lower Bound", "Upper Bound")
+rownames(CI.b0.out) <- c("95% CI for b0")
+round(CI.b0.out, 4)
+
+# b1 CI
+b1.LL <- b1 - t.value*s.b1
+b1.UL <- b1 + t.value*s.b1
+
+CI.b1.out <- cbind(b1.LL, b1.UL)
+colnames(CI.b1.out) <- c("Lower Bound", "Upper Bound")
+rownames(CI.b1.out) <- c("95% CI for b1")
+round(CI.b1.out, 4)
+```
+
 
 l) Obtain an approximate 95% Confidence Interval for the Area of the coupling, 
 when a deflection of 115 was observed (See section 4.6)
 
+
+
+```{r}
+y.h <- 115
+xhat.h <- (y.h - b0) / b1 # Point estimate
+s.pred <- sqrt((MSE / b1^2) * (1 + 1/n + ((xhat.h - xbar)^2 / SSxx)))
+t.value <- qt(0.975, n-2)
+
+# 95% CI for Xhat.h, given Yh = 115
+CI.Xhat.LL <- xhat.h - (t.value*s.pred)
+CI.Xhat.UL <- xhat.h + (t.value*s.pred)
+
+CI.Xhat.out <- cbind(CI.Xhat.LL, CI.Xhat.UL)
+colnames(CI.Xhat.out) <- c("Lower Bound", "Upper Bound")
+rownames(CI.Xhat.out) <- c("95% CI for Xhat.h, given Yh = 115")
+round(CI.Xhat.out, 4)
+```
+
+
 m) Obtain X’X, X’Y, (X’X)-1, beta-hat, MSE, and s2{beta-hat}
 
-X' -> X^T 
-(X'X)-1 is the inverse of X^T*X
+
+```{r}
+Xmat <- matrix(c(rep(1,n),X), ncol=2) # X is nx2 matrix [1_n, X]
+Ymat <- matrix(Y, ncol=1) # Y is nx1 matrix
+
+# Matrix calculations
+XprimeX <- t(Xmat) %*% Xmat # X'X 
+XprimeY <- t(Xmat) %*% Ymat # X'Y
+invXprimeX <- solve(XprimeX) # (X'X)^(-1)
+
+# Identity matrix and H (projection) matrix
+H <- Xmat %*% invXprimeX %*% t(Xmat)
+ID.mat <- diag(n)
+SSE.mat <- t(Ymat) %*% (ID.mat - H) %*% Y
+
+# Beta-hat, MSE, s^2{beta-hat}
+bhat <- invXprimeX %*% XprimeY # Beta-hat
+MSE.mat <- SSE.mat / (n-2)
+s2.bhat <- MSE.mat[1,1] * invXprimeX # s2{beta-hat}
+
+# Output matrices
+cat("\n", "X'X: ", "\n") # X'X
+XprimeX
+cat("\n", "X'Y: ", "\n") # X'Y
+XprimeY
+cat("\n", "(X'X)^-1: ", "\n") # (X'X)^-1
+invXprimeX
+cat("\n", "beta-hat: ", "\n") # Beta-hat
+bhat
+cat("\n", "MSE: ", "\n") # MSE
+MSE.mat
+cat("\n", "s^2{beta-hat}: ", "\n") # s^2{beta-hat}
+s2.bhat
+```
+
