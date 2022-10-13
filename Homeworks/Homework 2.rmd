@@ -17,55 +17,11 @@ library(lmtest)
 
 ### Load the data
 
-NEED TO GROUP THE DATA! DO NOT USE THE COUPLING AS DATA
-
 Y - Deflection of galvonometer, X - Area of the wires on the coupling
 
 ```{r, echo = FALSE}
 exp_data <- read.table("https://users.stat.ufl.edu/~winner/data/explosives1.dat",
                        header = F, col.names = c("coupling", "areaWire", "defGalv"))
-```
-
-# INCLASS EXPLANATION - Brown-Forsthye Test
-
-```{r}
-group.BF <- ifelse(exp_data$coupling <= 4, 1, 2) # Breaks the data by coupling value
-group.BF
-
-fit1 <- lm(defGalv ~ areaWire)
-res1 <- resid(fit1)
-
-median_e1 <- median(res1[group.BF == 1]) # Median residuals
-median_e2 <- median(res1[group.BF == 2])
-
-median_e <- rep(c(median_e1, median_e2), each = 11)
-
-d.BF <- abs(res1 - median_e)
-cbind(group.BF, d.BF)
-
-# T-test function
-t.test(d.BF ~ group.BF, var.equal = TRUE)
-
-# OR: Brute force calculation 
-dbar1 <- mean(d.BF[group.BF == 1])
-dbar2 <- mean(d.BF[group.BF == 2])
-
-var1 <- var(d.BF[group.BF == 1])
-var2 <- var(d.BF[group.BF == 2])
-
-n1 <- length(d.BF[group.BF == 1])
-n2 <- length(d.BF[group.BF == 2])
-
-var.p <- ((n1-1)*var1 + (n2-1)*var2) / (n1+n2-2) # Pooled variance
-
-t.BF <- (dbar1 - dbar2) / sqrt(var.p*(1/n1 + 1/n2)) # T-statistic
-
-p.t.BF <- 2*(1-pt(abs(t.BF), n1+n2-2)) # P-value
-
-BF.out <- cbind(dbar1 - dbar2, t.BF, p.t.BF)
-colnames(BF.out) <- c("Mean Diff", "t*", "2P(>|t*|))")
-rownames(BF.out) <- c("BF Test")
-round(BF.out, 4)
 ```
 
 ### a) The fitted equation and residuals
@@ -78,6 +34,8 @@ Y = 184.436 - 0.695X
 X <- exp_data$areaWire
 Y <- exp_data$defGalv
 lm_exp_data <- lm(Y ~ X)
+
+# ADD BY HAND CALCULATION
 
 summary(lm_exp_data)
 ```
@@ -114,6 +72,10 @@ Since |-20.557| >= 2.086, the test statistic t* is statistically significant at 
 
 ```{r}
 cor.test(X,Y) # Pearson's correlation test
+
+# ADD BY HAND CALCULATION
+
+SSyy <- sum()
 ```
 
 e) Normal Probability Plot of the residuals
@@ -123,17 +85,30 @@ qqnorm(residuals)
 qqline(residuals)
 ```
 
-f) Shapiro-Wilk test for normality (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+f) Shapiro-Wilk test for normality 
+
+H0: The errors follow a normal distribution.
+
+Ha: The errors do not follow a normal distribution.
+
+The Shapiro-Wilk test produces a p-value of 0.09. Since 0.09 > 0.05, we fail to reject H0, and thus conclude that the residuals follow a normal distribution at the significance level 0.05.
 
 ```{r}
 shapiro.test(residuals)
 ```
 
-g) Brown-Forsyth test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+g) Brown-Forsyth test for constant variance 
+
+H0: There is equal variance among the errors.
+
+Ha: There is unequal variance among the errors (Increasing or Decreasing in X).
+
+We have test statistic t* = -0.5534, and will compare it against t(0.975, 20) = 2.086.
+
+Since |t*| = 0.5534 < 2.086, we fail to reject H0, and thus conclude that there is equal variance among the errors at the significance level 0.05.
 
 ```{r}
 group.BF <- ifelse(exp_data$coupling <= 4, 1, 2) # Breaks the data by coupling value
-group.BF
 
 fit1 <- lm(exp_data$defGalv ~ exp_data$areaWire)
 res1 <- resid(fit1)
@@ -146,10 +121,7 @@ median_e <- rep(c(median_e1, median_e2), each = 11)
 d.BF <- abs(res1 - median_e)
 cbind(group.BF, d.BF)
 
-# T-test function
-# t.test(d.BF ~ group.BF, var.equal = TRUE)
-
-# OR: Brute force calculation 
+# Brute force calculation 
 dbar1 <- mean(d.BF[group.BF == 1])
 dbar2 <- mean(d.BF[group.BF == 2])
 
@@ -171,10 +143,18 @@ rownames(BF.out) <- c("BF Test")
 round(BF.out, 4)
 ```
 
-h) Breusch-Pagan Test for constant variance (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+h) Breusch-Pagan Test for constant variance
+
+H0: There is equal variance among the errors.
+
+Ha: There is unequal variance among the errors.
+
+We have test statistic X^2* = 2.5916, and will compare it against X^2(0.95, 1) = 3.8415.
+
+Since X^2* = 2.5916 < 3.8415, we fail to reject H0, and thus conclude that there is equal variance among the errors at the significance level 0.05.
 
 ```{r}
-bptest(lm_exp_data)
+#bptest(lm_exp_data)
 
 # 1. Find ei^2
 residuals.sq <- residuals^2
@@ -195,13 +175,21 @@ rownames(BP.out) <- c("BP Test")
 round(BP.out, 4)
 ```
 
-i) F-test for lack-of-fit (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
+i) F-test for lack-of-fit 
+
+H0: E(Yi) = B0 + B1Xi - there is no lack of fit in the model.
+
+Ha: E(Yi) != B0 + B1Xi - there is lack of fit in the model.
+
+We have the test statistic F* = 7.8407. Our p-value is 0.0007684.
+
+Since 0.0007684 < 0.05, we reject H0, and thus conclude that there is lack of fit in the model at the significance level 0.05.
 
 ```{r}
-# SEE PHONE FOR PIC
-lm_exp_data_lof <- lm(Y ~ factor(X)-1)
-anova(lm_exp_data, lm_exp_data_lof)
-summary(lm_exp_data_lof)
+# Full vs. reduced
+lm_exp_data_full <- lm(Y ~ factor(X))
+lm_exp_data_reduced <- lm(Y ~ X)
+anova(lm_exp_data_reduced, lm_exp_data_full)
 ```
 
 j) Obtain “best” power transformation method, based on Box-Cox transformations (HAVE TO INTERPRET THIS - SEE NOTES/PPT)
