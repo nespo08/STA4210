@@ -1,11 +1,13 @@
 ---
 title: "Homework 2"
 author: "Nicholas Esposito"
-date: "10/9/2022"
-output: html_document
+date: "10/13/2022"
+output:
+  html_document: default
+  pdf_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -20,7 +22,7 @@ library(MASS)
 
 Y - Deflection of galvonometer, X - Area of the wires on the coupling
 
-```{r, echo = FALSE}
+```{r}
 exp_data <- read.table("https://users.stat.ufl.edu/~winner/data/explosives1.dat",
                        header = F, col.names = c("coupling", "areaWire", "defGalv"))
 ```
@@ -31,7 +33,7 @@ The fitted equation for the simple linear model relating the deflection of galvo
 
 Y = 184.436 - 0.695X
 
-```{r, echo = FALSE}
+```{r}
 X <- exp_data$areaWire
 Y <- exp_data$defGalv
 lm_exp_data <- lm(Y ~ X)
@@ -67,14 +69,14 @@ plot(Y ~ X, main = "Deflection of Galvonomete (Y) vs Area of the Wires on the Co
 abline(lm_exp_data)
 ```
 
-c) Residual Plot of e vs X
+### c) Residual Plot of e vs X
 
 ```{r}
 plot(X, residuals, main = "Residuals vs Predictors (X)")
 abline(lm_exp_data)
 ```
 
-d) A test of whether deflections (Y) are associated with area of the wires (X)
+### d) A test of whether deflections (Y) are associated with area of the wires (X)
 
 Use Pearson's correlation test to test H0: p = 0 versus Ha: p != 0 (alpha=0.05).
 
@@ -85,9 +87,7 @@ Rejection Region: |t*| >= t(0.975, 20)
 Since |-20.557| >= 2.086, the test statistic t* is statistically significant at alpha = 0.05. Thus, we reject the null hypothesis H0: p = 0 and conclude that there is a linear association between deflections (Y) and area of the wires (X).
 
 ```{r}
-cor.test(X,Y) # Pearson's correlation test
-
-# OR: Calculation by hand
+# Calculation by hand
 SSyy <- sum((Y-ybar)^2)
 R <- SSxy / sqrt(SSxx*SSyy)
 t.Cor <- R*sqrt(n-2) / sqrt(1-R^2)
@@ -98,14 +98,14 @@ rownames(cor.out) <- c("Correlation Test")
 round(cor.out, 4)
 ```
 
-e) Normal Probability Plot of the residuals
+### e) Normal Probability Plot of the residuals
 
 ```{r}
 qqnorm(residuals)
 qqline(residuals)
 ```
 
-f) Shapiro-Wilk test for normality 
+### f) Shapiro-Wilk test for normality 
 
 H0: The errors follow a normal distribution.
 
@@ -117,7 +117,7 @@ The Shapiro-Wilk test produces a p-value of 0.09. Since 0.09 > 0.05, we fail to 
 shapiro.test(residuals)
 ```
 
-g) Brown-Forsyth test for constant variance 
+### g) Brown-Forsyth test for constant variance 
 
 H0: There is equal variance among the errors.
 
@@ -163,7 +163,7 @@ rownames(BF.out) <- c("BF Test")
 round(BF.out, 4)
 ```
 
-h) Breusch-Pagan Test for constant variance
+### h) Breusch-Pagan Test for constant variance
 
 H0: There is equal variance among the errors.
 
@@ -193,7 +193,7 @@ rownames(BP.out) <- c("BP Test")
 round(BP.out, 4)
 ```
 
-i) F-test for lack-of-fit 
+### i) F-test for lack-of-fit 
 
 H0: E(Yi) = B0 + B1Xi - there is no lack of fit in the model.
 
@@ -210,7 +210,7 @@ lm_exp_data_reduced <- lm(Y ~ X)
 anova(lm_exp_data_reduced, lm_exp_data_full)
 ```
 
-j) Obtain “best” power transformation method, based on Box-Cox transformations
+### j) Obtain “best” power transformation method, based on Box-Cox transformations
 
 First, we run series of power transformations and find the "best" lambda value, which is -0.2222. This lambda can be used to fit a new linear regression model, which relates (Y^lambda-1) / lambda to X, where lambda is -0.2222.
 
@@ -230,7 +230,7 @@ round(BC.out, 4)
 ```
 
 
-k) Obtain simultaneous 95% Confidence Intervals for β0, β1
+### k) Obtain simultaneous 95% Confidence Intervals for β0, β1
 
 The 95% confidence interval for β0 is (178.3546, 190.5168). We are 95% confident the true value for β0 (the intercept of the regression line) falls between 178.3546 and 190.5168.
 
@@ -265,10 +265,10 @@ round(CI.b1.out, 4)
 ```
 
 
-l) Obtain an approximate 95% Confidence Interval for the Area of the coupling, 
+### l) Obtain an approximate 95% Prediction Interval for the Area of the coupling, 
 when a deflection of 115 was observed (See section 4.6)
 
-
+The 95% prediction interval for Xhat is (77.1829, 122.5269). We are 95% confident the true value for Xhat falls between 77.1829 and 122.5269 when Yh = 115.
 
 ```{r}
 y.h <- 115
@@ -277,20 +277,19 @@ s.pred <- sqrt((MSE / b1^2) * (1 + 1/n + ((xhat.h - xbar)^2 / SSxx)))
 t.value <- qt(0.975, n-2)
 
 # 95% CI for Xhat.h, given Yh = 115
-CI.Xhat.LL <- xhat.h - (t.value*s.pred)
-CI.Xhat.UL <- xhat.h + (t.value*s.pred)
+PI.Xhat.LL <- xhat.h - (t.value*s.pred)
+PI.Xhat.UL <- xhat.h + (t.value*s.pred)
 
-CI.Xhat.out <- cbind(CI.Xhat.LL, CI.Xhat.UL)
-colnames(CI.Xhat.out) <- c("Lower Bound", "Upper Bound")
-rownames(CI.Xhat.out) <- c("95% CI for Xhat.h, given Yh = 115")
-round(CI.Xhat.out, 4)
+PI.Xhat.out <- cbind(PI.Xhat.LL, PI.Xhat.UL)
+colnames(PI.Xhat.out) <- c("Lower Bound", "Upper Bound")
+rownames(PI.Xhat.out) <- c("95% PI for Xhat.h, given Yh = 115")
+round(PI.Xhat.out, 4)
 ```
 
+### m) Obtain X’X, X’Y, (X’X)-1, beta-hat, MSE, and s2{beta-hat}
 
-m) Obtain X’X, X’Y, (X’X)-1, beta-hat, MSE, and s2{beta-hat}
 
-
-```{r}
+```{r, echo = FALSE}
 Xmat <- matrix(c(rep(1,n),X), ncol=2) # X is nx2 matrix [1_n, X]
 Ymat <- matrix(Y, ncol=1) # Y is nx1 matrix
 
